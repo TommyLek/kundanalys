@@ -29,8 +29,10 @@ const COLORS = [
 export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
   const { getVarugruppLabel } = useVarugruppContext()
 
-  const topCategories = categories.slice(0, 8)
-  const othersTotal = categories
+  // Sort by sales descending to show largest first
+  const sortedCategories = [...categories].sort((a, b) => b.forsaljning - a.forsaljning)
+  const topCategories = sortedCategories.slice(0, 8)
+  const othersTotal = sortedCategories
     .slice(8)
     .reduce((sum, c) => sum + c.forsaljning, 0)
 
