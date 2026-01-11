@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import type { ProductSales } from '../types'
 import { useVarugruppContext } from '../context/VarugruppContext'
+import { useArtikelContext } from '../context/ArtikelContext'
 
 interface TopProductsProps {
   products: ProductSales[]
@@ -17,12 +19,23 @@ function formatCurrency(value: number): string {
 function formatNumber(value: number): string {
   return value.toLocaleString('sv-SE', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   })
 }
 
 export function TopProducts({ products }: TopProductsProps) {
   const { getVarugruppLabel } = useVarugruppContext()
+  const { getArtikelText, fetchArtiklar } = useArtikelContext()
+
+  // Fetch artikel data for displayed products
+  useEffect(() => {
+    const artikelnummer = products
+      .map((p) => p.artikelnummer)
+      .filter((nr) => nr && nr !== 'Okänd')
+    if (artikelnummer.length > 0) {
+      fetchArtiklar(artikelnummer)
+    }
+  }, [products, fetchArtiklar])
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -37,6 +50,9 @@ export function TopProducts({ products }: TopProductsProps) {
             <tr>
               <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Artikelnummer
+              </th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Artikeltext
               </th>
               <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Varugrupp
@@ -72,6 +88,9 @@ export function TopProducts({ products }: TopProductsProps) {
                 >
                   <td className="px-5 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                     {product.artikelnummer || '-'}
+                  </td>
+                  <td className="px-5 py-3 text-sm text-gray-900 max-w-xs truncate" title={getArtikelText(product.artikelnummer)}>
+                    {getArtikelText(product.artikelnummer)}
                   </td>
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500">
                     {getVarugruppLabel(product.varugrupp)}
