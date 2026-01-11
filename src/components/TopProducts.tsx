@@ -22,7 +22,7 @@ function formatNumber(value: number): string {
 }
 
 export function TopProducts({ products }: TopProductsProps) {
-  const { getVarugruppNamn } = useVarugruppContext()
+  const { getVarugruppLabel } = useVarugruppContext()
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -74,7 +74,7 @@ export function TopProducts({ products }: TopProductsProps) {
                     {product.artikelnummer || '-'}
                   </td>
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500">
-                    {getVarugruppNamn(product.varugrupp)}
+                    {getVarugruppLabel(product.varugrupp)}
                   </td>
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
                     {formatCurrency(product.forsaljning)}

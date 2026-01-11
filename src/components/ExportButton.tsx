@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { CustomerSummary } from '../types'
 import { exportCustomerPDF, exportArchivePDF } from '../utils/pdfExport'
+import { useVarugruppContext } from '../context/VarugruppContext'
 
 interface ExportButtonProps {
   summary: CustomerSummary
@@ -8,14 +9,15 @@ interface ExportButtonProps {
 
 export function ExportButton({ summary }: ExportButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const { getVarugruppLabel } = useVarugruppContext()
 
   const handleCustomerExport = () => {
-    exportCustomerPDF(summary)
+    exportCustomerPDF(summary, getVarugruppLabel)
     setIsOpen(false)
   }
 
   const handleArchiveExport = () => {
-    exportArchivePDF(summary)
+    exportArchivePDF(summary, getVarugruppLabel)
     setIsOpen(false)
   }
 

@@ -12,6 +12,7 @@ interface UseVarugruppResult {
   updateVarugrupp: (id: string, data: VarugruppUpdate) => Promise<Varugrupp | null>
   deleteVarugrupp: (id: string) => Promise<boolean>
   getVarugruppNamn: (id: string) => string
+  getVarugruppLabel: (id: string) => string
 }
 
 export function useVarugrupper(): UseVarugruppResult {
@@ -117,6 +118,14 @@ export function useVarugrupper(): UseVarugruppResult {
     [varugruppMap]
   )
 
+  const getVarugruppLabel = useCallback(
+    (id: string): string => {
+      const varugrupp = varugruppMap.get(id)
+      return varugrupp ? `${id} - ${varugrupp.varugrupp_namn}` : id
+    },
+    [varugruppMap]
+  )
+
   return {
     varugrupper,
     varugruppMap,
@@ -127,5 +136,6 @@ export function useVarugrupper(): UseVarugruppResult {
     updateVarugrupp,
     deleteVarugrupp,
     getVarugruppNamn,
+    getVarugruppLabel,
   }
 }

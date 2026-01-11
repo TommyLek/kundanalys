@@ -27,7 +27,7 @@ const COLORS = [
 ]
 
 export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
-  const { getVarugruppNamn } = useVarugruppContext()
+  const { getVarugruppLabel } = useVarugruppContext()
 
   const topCategories = categories.slice(0, 8)
   const othersTotal = categories
@@ -36,7 +36,7 @@ export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
 
   const data = [
     ...topCategories.map((c) => ({
-      name: getVarugruppNamn(c.varugrupp),
+      name: getVarugruppLabel(c.varugrupp),
       value: c.forsaljning,
     })),
     ...(othersTotal > 0

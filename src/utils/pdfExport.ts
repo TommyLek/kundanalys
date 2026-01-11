@@ -19,7 +19,10 @@ function formatNumber(value: number): string {
   })
 }
 
-export function exportCustomerPDF(summary: CustomerSummary): void {
+export function exportCustomerPDF(
+  summary: CustomerSummary,
+  getVarugruppLabel: (id: string) => string = (id) => id
+): void {
   // Convert to public summary (removes sensitive data like kostnad, marginal)
   const publicSummary = toPublicSummary(summary)
 
@@ -116,7 +119,7 @@ export function exportCustomerPDF(summary: CustomerSummary): void {
   yPos += 8
 
   const categoryData = publicSummary.topCategories.slice(0, 10).map((c) => [
-    c.varugrupp,
+    getVarugruppLabel(c.varugrupp),
     formatCurrency(c.forsaljning),
     formatNumber(c.antal),
   ])
@@ -151,7 +154,7 @@ export function exportCustomerPDF(summary: CustomerSummary): void {
 
   const productData = publicSummary.topProducts.slice(0, 10).map((p) => [
     p.artikelnummer,
-    p.varugrupp,
+    getVarugruppLabel(p.varugrupp),
     formatCurrency(p.forsaljning),
     formatNumber(p.antal),
   ])
@@ -195,7 +198,10 @@ export function exportCustomerPDF(summary: CustomerSummary): void {
 }
 
 // Internal/Archive PDF - includes ALL data (cost, margin)
-export function exportArchivePDF(summary: CustomerSummary): void {
+export function exportArchivePDF(
+  summary: CustomerSummary,
+  getVarugruppLabel: (id: string) => string = (id) => id
+): void {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   let yPos = 20
@@ -308,7 +314,7 @@ export function exportArchivePDF(summary: CustomerSummary): void {
   const categoryData = summary.topCategories.slice(0, 10).map((c) => {
     const marginalPercent = c.forsaljning > 0 ? ((c.marginal / c.forsaljning) * 100).toFixed(1) + '%' : '0%'
     return [
-      c.varugrupp,
+      getVarugruppLabel(c.varugrupp),
       formatCurrency(c.forsaljning),
       formatCurrency(c.kostnad),
       `${formatCurrency(c.marginal)} (${marginalPercent})`,
@@ -351,7 +357,7 @@ export function exportArchivePDF(summary: CustomerSummary): void {
     const marginalPercent = p.forsaljning > 0 ? ((marginal / p.forsaljning) * 100).toFixed(1) + '%' : '0%'
     return [
       p.artikelnummer,
-      p.varugrupp,
+      getVarugruppLabel(p.varugrupp),
       formatCurrency(p.forsaljning),
       formatCurrency(p.kostnad),
       `${formatCurrency(marginal)} (${marginalPercent})`,
