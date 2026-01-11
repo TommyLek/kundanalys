@@ -31,19 +31,36 @@ export function useVarugrupper(): UseVarugruppResult {
     setError(null)
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('varugrupp')
-        .select('*')
-        .order('varugrupp_id')
+      // Fetch all varugrupper using pagination (Supabase limits to 1000 per request)
+      const allRows: Varugrupp[] = []
+      const pageSize = 1000
+      let page = 0
+      let hasMore = true
 
-      if (fetchError) throw fetchError
+      while (hasMore) {
+        const from = page * pageSize
+        const to = from + pageSize - 1
 
-      const rows = (data || []) as Varugrupp[]
-      setVarugrupper(rows)
+        const { data, error: fetchError } = await supabase
+          .from('varugrupp')
+          .select('*')
+          .order('varugrupp_id')
+          .range(from, to)
+
+        if (fetchError) throw fetchError
+
+        const rows = (data || []) as Varugrupp[]
+        allRows.push(...rows)
+
+        hasMore = rows.length === pageSize
+        page++
+      }
+
+      setVarugrupper(allRows)
 
       // Build lookup map
       const map = new Map<string, Varugrupp>()
-      rows.forEach((v) => map.set(v.varugrupp_id, v))
+      allRows.forEach((v) => map.set(v.varugrupp_id, v))
       setVarugruppMap(map)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch varugrupper')
