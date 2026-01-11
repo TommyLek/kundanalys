@@ -1,4 +1,5 @@
 import type { ProductSales } from '../types'
+import { useVarugruppContext } from '../context/VarugruppContext'
 
 interface TopProductsProps {
   products: ProductSales[]
@@ -21,6 +22,8 @@ function formatNumber(value: number): string {
 }
 
 export function TopProducts({ products }: TopProductsProps) {
+  const { getVarugruppNamn } = useVarugruppContext()
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-200">
@@ -71,7 +74,7 @@ export function TopProducts({ products }: TopProductsProps) {
                     {product.artikelnummer || '-'}
                   </td>
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500">
-                    {product.varugrupp}
+                    {getVarugruppNamn(product.varugrupp)}
                   </td>
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
                     {formatCurrency(product.forsaljning)}

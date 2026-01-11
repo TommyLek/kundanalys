@@ -7,6 +7,7 @@ import {
   Legend,
 } from 'recharts'
 import type { CategorySales } from '../types'
+import { useVarugruppContext } from '../context/VarugruppContext'
 
 interface CategoryBreakdownProps {
   categories: CategorySales[]
@@ -26,6 +27,8 @@ const COLORS = [
 ]
 
 export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
+  const { getVarugruppNamn } = useVarugruppContext()
+
   const topCategories = categories.slice(0, 8)
   const othersTotal = categories
     .slice(8)
@@ -33,7 +36,7 @@ export function CategoryBreakdown({ categories }: CategoryBreakdownProps) {
 
   const data = [
     ...topCategories.map((c) => ({
-      name: c.varugrupp,
+      name: getVarugruppNamn(c.varugrupp),
       value: c.forsaljning,
     })),
     ...(othersTotal > 0
