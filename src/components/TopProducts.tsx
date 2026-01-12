@@ -5,6 +5,7 @@ import { useArtikelContext } from '../context/ArtikelContext'
 
 interface TopProductsProps {
   products: ProductSales[]
+  showInternalData: boolean
 }
 
 function formatCurrency(value: number): string {
@@ -23,7 +24,7 @@ function formatNumber(value: number): string {
   })
 }
 
-export function TopProducts({ products }: TopProductsProps) {
+export function TopProducts({ products, showInternalData }: TopProductsProps) {
   const { getVarugruppLabel } = useVarugruppContext()
   const { getArtikelText, fetchArtiklar } = useArtikelContext()
 
@@ -63,14 +64,16 @@ export function TopProducts({ products }: TopProductsProps) {
               <th className="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Antal
               </th>
-              <th className="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span className="inline-flex items-center gap-1">
-                  Marginal
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-600">
-                    Intern
+              {showInternalData && (
+                <th className="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-1">
+                    Marginal
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-600">
+                      Intern
+                    </span>
                   </span>
-                </span>
-              </th>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -101,18 +104,20 @@ export function TopProducts({ products }: TopProductsProps) {
                   <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500 text-right">
                     {formatNumber(product.antal)}
                   </td>
-                  <td className="px-5 py-3 whitespace-nowrap text-sm text-right">
-                    <span
-                      className={
-                        marginal >= 0 ? 'text-green-600' : 'text-red-600'
-                      }
-                    >
-                      {formatCurrency(marginal)}
-                    </span>
-                    <span className="text-gray-400 ml-1">
-                      ({marginalPercent.toFixed(1)}%)
-                    </span>
-                  </td>
+                  {showInternalData && (
+                    <td className="px-5 py-3 whitespace-nowrap text-sm text-right">
+                      <span
+                        className={
+                          marginal >= 0 ? 'text-green-600' : 'text-red-600'
+                        }
+                      >
+                        {formatCurrency(marginal)}
+                      </span>
+                      <span className="text-gray-400 ml-1">
+                        ({marginalPercent.toFixed(1)}%)
+                      </span>
+                    </td>
+                  )}
                 </tr>
               )
             })}

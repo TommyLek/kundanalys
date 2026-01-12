@@ -9,9 +9,10 @@ import { ExportButton } from './ExportButton'
 
 interface DashboardProps {
   summary: CustomerSummary
+  showInternalData: boolean
 }
 
-export function Dashboard({ summary }: DashboardProps) {
+export function Dashboard({ summary, showInternalData }: DashboardProps) {
   const periodStart = format(summary.period.start, 'd MMM yyyy', { locale: sv })
   const periodEnd = format(summary.period.end, 'd MMM yyyy', { locale: sv })
 
@@ -26,17 +27,17 @@ export function Dashboard({ summary }: DashboardProps) {
             Period: {periodStart} - {periodEnd}
           </p>
         </div>
-        <ExportButton summary={summary} />
+        <ExportButton summary={summary} showInternalData={showInternalData} />
       </div>
 
-      <KPICards kpis={summary.kpis} />
+      <KPICards kpis={summary.kpis} showInternalData={showInternalData} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SalesChart monthlySales={summary.monthlySales} />
+        <SalesChart monthlySales={summary.monthlySales} showInternalData={showInternalData} />
         <CategoryBreakdown categories={summary.topCategories} />
       </div>
 
-      <TopProducts products={summary.topProducts} />
+      <TopProducts products={summary.topProducts} showInternalData={showInternalData} />
     </div>
   )
 }

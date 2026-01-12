@@ -2,6 +2,7 @@ import type { SalesKPI } from '../types'
 
 interface KPICardsProps {
   kpis: SalesKPI
+  showInternalData: boolean
 }
 
 function formatCurrency(value: number): string {
@@ -20,8 +21,8 @@ function formatPercent(value: number): string {
   }) + '%'
 }
 
-export function KPICards({ kpis }: KPICardsProps) {
-  const cards = [
+export function KPICards({ kpis, showInternalData }: KPICardsProps) {
+  const allCards = [
     {
       label: 'Total forsaljning',
       value: formatCurrency(kpis.totalForsaljning),
@@ -45,6 +46,10 @@ export function KPICards({ kpis }: KPICardsProps) {
       sensitive: true,
     },
   ]
+
+  const cards = showInternalData
+    ? allCards
+    : allCards.filter((card) => !card.sensitive)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -5,9 +5,10 @@ import { useVarugruppContext } from '../context/VarugruppContext'
 
 interface ExportButtonProps {
   summary: CustomerSummary
+  showInternalData: boolean
 }
 
-export function ExportButton({ summary }: ExportButtonProps) {
+export function ExportButton({ summary, showInternalData }: ExportButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { getVarugruppLabel } = useVarugruppContext()
 
@@ -72,20 +73,22 @@ export function ExportButton({ summary }: ExportButtonProps) {
                 Utan kanslig data (kostnad/marginal)
               </div>
             </button>
-            <button
-              onClick={handleArchiveExport}
-              className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors"
-            >
-              <div className="font-medium text-gray-900 flex items-center gap-2">
-                Arkiv-PDF
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
-                  Intern
-                </span>
-              </div>
-              <div className="text-sm text-gray-500">
-                Komplett data for intern arkivering
-              </div>
-            </button>
+            {showInternalData && (
+              <button
+                onClick={handleArchiveExport}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+              >
+                <div className="font-medium text-gray-900 flex items-center gap-2">
+                  Arkiv-PDF
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
+                    Intern
+                  </span>
+                </div>
+                <div className="text-sm text-gray-500">
+                  Komplett data for intern arkivering
+                </div>
+              </button>
+            )}
           </div>
         </>
       )}

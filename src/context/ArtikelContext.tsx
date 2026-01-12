@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import type { ArtikelMap, Artikel } from '../types/supabase'
 
