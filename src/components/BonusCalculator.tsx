@@ -5,6 +5,7 @@ import { calculateBonus } from '../utils/bonusCalculator'
 interface BonusCalculatorProps {
   totalForsaljning: number
   kundnummer: number
+  onClose: () => void
 }
 
 function formatCurrency(value: number): string {
@@ -30,8 +31,7 @@ function formatSwedishNumber(value: number, decimals: number = 1): string {
   })
 }
 
-export function BonusCalculator({ totalForsaljning, kundnummer }: BonusCalculatorProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+export function BonusCalculator({ totalForsaljning, kundnummer, onClose }: BonusCalculatorProps) {
   const [bonusType, setBonusType] = useState<BonusType>('rak')
   const [procentTyp1, setProcentTyp1] = useState('2,5')
   const [procentTyp2, setProcentTyp2] = useState('3,0')
@@ -39,7 +39,6 @@ export function BonusCalculator({ totalForsaljning, kundnummer }: BonusCalculato
 
   // Reset when customer changes
   useEffect(() => {
-    setIsExpanded(false)
     setBonusType('rak')
     setProcentTyp1('2,5')
     setProcentTyp2('3,0')
@@ -58,24 +57,12 @@ export function BonusCalculator({ totalForsaljning, kundnummer }: BonusCalculato
 
   const berakningsunderlag = calculation.baseAmount - calculation.deductedAmount
 
-  if (!isExpanded) {
-    return (
-      <button
-        onClick={() => setIsExpanded(true)}
-        className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-        title="Beräkning"
-      >
-        B
-      </button>
-    )
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-medium text-gray-900">Beräkning</h3>
         <button
-          onClick={() => setIsExpanded(false)}
+          onClick={onClose}
           className="text-gray-400 hover:text-gray-600 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

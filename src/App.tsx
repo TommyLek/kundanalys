@@ -17,6 +17,7 @@ function App() {
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null)
   const [customerSummary, setCustomerSummary] = useState<CustomerSummary | null>(null)
   const [showInternalData, setShowInternalData] = useState(true)
+  const [showBonusCalculator, setShowBonusCalculator] = useState(false)
 
   const customers = allRows.length > 0 ? getUniqueCustomers(allRows) : []
 
@@ -31,6 +32,7 @@ function App() {
     const customerRows = filterByCustomer(allRows, kundnummer)
     const summary = calculateCustomerSummary(customerRows, kundnummer)
     setCustomerSummary(summary)
+    setShowBonusCalculator(false)
   }
 
   if (view === 'admin-varugrupp') {
@@ -97,6 +99,19 @@ function App() {
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
+                    {customerSummary && (
+                      <button
+                        onClick={() => setShowBonusCalculator(!showBonusCalculator)}
+                        className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                          showBonusCalculator
+                            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                        title="Beräkning"
+                      >
+                        B
+                      </button>
+                    )}
                     <button
                       onClick={() => setShowInternalData(!showInternalData)}
                       className={`text-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors ${
@@ -136,7 +151,14 @@ function App() {
                 </div>
               </div>
 
-              {customerSummary && <Dashboard summary={customerSummary} showInternalData={showInternalData} />}
+              {customerSummary && (
+                <Dashboard
+                  summary={customerSummary}
+                  showInternalData={showInternalData}
+                  showBonusCalculator={showBonusCalculator}
+                  onCloseBonusCalculator={() => setShowBonusCalculator(false)}
+                />
+              )}
             </div>
           )}
         </main>

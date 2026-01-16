@@ -11,9 +11,11 @@ import { BonusCalculator } from './BonusCalculator'
 interface DashboardProps {
   summary: CustomerSummary
   showInternalData: boolean
+  showBonusCalculator: boolean
+  onCloseBonusCalculator: () => void
 }
 
-export function Dashboard({ summary, showInternalData }: DashboardProps) {
+export function Dashboard({ summary, showInternalData, showBonusCalculator, onCloseBonusCalculator }: DashboardProps) {
   const periodStart = format(summary.period.start, 'd MMM yyyy', { locale: sv })
   const periodEnd = format(summary.period.end, 'd MMM yyyy', { locale: sv })
 
@@ -33,10 +35,13 @@ export function Dashboard({ summary, showInternalData }: DashboardProps) {
 
       <KPICards kpis={summary.kpis} showInternalData={showInternalData} />
 
-      <BonusCalculator
-        totalForsaljning={summary.kpis.totalForsaljning}
-        kundnummer={summary.kundnummer}
-      />
+      {showBonusCalculator && (
+        <BonusCalculator
+          totalForsaljning={summary.kpis.totalForsaljning}
+          kundnummer={summary.kundnummer}
+          onClose={onCloseBonusCalculator}
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SalesChart monthlySales={summary.monthlySales} showInternalData={showInternalData} />
