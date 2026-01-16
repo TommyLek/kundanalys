@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import { sv } from 'date-fns/locale'
 import type { CustomerSummary } from '../types'
 import { KPICards } from './KPICards'
+import { StalleKPICards } from './StalleKPICards'
 import { SalesChart } from './SalesChart'
 import { CategoryBreakdown } from './CategoryBreakdown'
 import { TopProducts } from './TopProducts'
@@ -39,6 +40,11 @@ export function Dashboard({ summary, showInternalData, showBonusCalculator, onCl
         kpis={summary.kpis}
         showInternalData={showInternalData}
         bonusAmount={showBonusCalculator ? bonusAmount : 0}
+      />
+
+      <StalleKPICards
+        stalleSummaries={summary.stalleSummaries}
+        showInternalData={showInternalData}
       />
 
       {showBonusCalculator && (

@@ -7,6 +7,7 @@ import type {
   CategorySales,
   ProductSales,
   CustomerSummary,
+  StalleSummary,
 } from '../types'
 
 export function calculateKPIs(rows: OrderRow[]): SalesKPI {
@@ -138,6 +139,41 @@ export function calculateProductSales(rows: OrderRow[]): ProductSales[] {
     .slice(0, 15)
 }
 
+export function calculateStalleSummaries(rows: OrderRow[]): StalleSummary[] {
+  const stalleMap = new Map<number, { rows: OrderRow[]; orders: Set<number> }>()
+
+  for (const row of rows) {
+    if (!stalleMap.has(row.stalle)) {
+      stalleMap.set(row.stalle, { rows: [], orders: new Set() })
+    }
+    const data = stalleMap.get(row.stalle)!
+    data.rows.push(row)
+    data.orders.add(row.ordernummer)
+  }
+
+  const summaries: StalleSummary[] = []
+
+  for (const [stalle, data] of stalleMap) {
+    const totalForsaljning = data.rows.reduce((sum, row) => sum + row.faktureratBelopp, 0)
+    const totalKostnad = data.rows.reduce((sum, row) => sum + row.kostbelopp, 0)
+    const antalOrdrar = data.orders.size
+    const snittOrdervarde = antalOrdrar > 0 ? totalForsaljning / antalOrdrar : 0
+    const marginal = totalForsaljning - totalKostnad
+    const marginalProcent = totalForsaljning > 0 ? (marginal / totalForsaljning) * 100 : 0
+
+    summaries.push({
+      stalle,
+      totalForsaljning,
+      antalOrdrar,
+      snittOrdervarde,
+      marginal,
+      marginalProcent,
+    })
+  }
+
+  return summaries.sort((a, b) => b.totalForsaljning - a.totalForsaljning)
+}
+
 export function calculateCustomerSummary(
   rows: OrderRow[],
   kundnummer: number
@@ -156,6 +192,7 @@ export function calculateCustomerSummary(
     monthlySales: calculateMonthlySales(rows),
     topCategories: calculateCategorySales(rows),
     topProducts: calculateProductSales(rows),
+    stalleSummaries: calculateStalleSummaries(rows),
   }
 }
 

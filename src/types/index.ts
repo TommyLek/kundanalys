@@ -73,6 +73,15 @@ export interface ProductSales {
   kostnad: number;
 }
 
+export interface StalleSummary {
+  stalle: number;
+  totalForsaljning: number;
+  antalOrdrar: number;
+  snittOrdervarde: number;
+  marginal: number;
+  marginalProcent: number;
+}
+
 export interface CustomerSummary {
   kundnummer: number;
   period: {
@@ -83,6 +92,7 @@ export interface CustomerSummary {
   monthlySales: MonthlySales[];
   topCategories: CategorySales[];
   topProducts: ProductSales[];
+  stalleSummaries: StalleSummary[];
 }
 
 export type BonusType = 'rak' | 'medAvdrag'
