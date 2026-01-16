@@ -60,6 +60,7 @@ export function KPICards({ kpis, showInternalData, bonusAmount = 0 }: KPICardsPr
       subValue: marginalSubValue,
       color: 'bg-amber-500',
       sensitive: true,
+      smallText: bonusAmount > 0,
     },
   ]
 
@@ -85,9 +86,9 @@ export function KPICards({ kpis, showInternalData, bonusAmount = 0 }: KPICardsPr
                   </span>
                 )}
               </p>
-              <p className="text-xl font-semibold text-gray-900">{card.value}</p>
+              <p className={`font-semibold text-gray-900 whitespace-nowrap ${card.smallText ? 'text-base' : 'text-xl'}`}>{card.value}</p>
               {card.subValue && (
-                <p className="text-sm text-gray-500">{card.subValue}</p>
+                <p className={`text-gray-500 whitespace-nowrap ${card.smallText ? 'text-xs' : 'text-sm'}`}>{card.subValue}</p>
               )}
             </div>
           </div>
