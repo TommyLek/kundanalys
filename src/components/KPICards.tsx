@@ -3,6 +3,7 @@ import type { SalesKPI } from '../types'
 interface KPICardsProps {
   kpis: SalesKPI
   showInternalData: boolean
+  bonusAmount?: number
 }
 
 function formatCurrency(value: number): string {
@@ -21,7 +22,18 @@ function formatPercent(value: number): string {
   }) + '%'
 }
 
-export function KPICards({ kpis, showInternalData }: KPICardsProps) {
+export function KPICards({ kpis, showInternalData, bonusAmount = 0 }: KPICardsProps) {
+  // Calculate margin after bonus
+  const marginalAfterBonus = kpis.marginal - bonusAmount
+  const marginalProcentAfterBonus = kpis.totalForsaljning > 0
+    ? (marginalAfterBonus / kpis.totalForsaljning) * 100
+    : 0
+
+  // Format margin subValue with optional bonus margin
+  const marginalSubValue = bonusAmount > 0
+    ? `${formatPercent(kpis.marginalProcent)} (${formatPercent(marginalProcentAfterBonus)})`
+    : formatPercent(kpis.marginalProcent)
+
   const allCards = [
     {
       label: 'Total forsaljning',
@@ -41,7 +53,7 @@ export function KPICards({ kpis, showInternalData }: KPICardsProps) {
     {
       label: 'Marginal',
       value: formatCurrency(kpis.marginal),
-      subValue: formatPercent(kpis.marginalProcent),
+      subValue: marginalSubValue,
       color: 'bg-amber-500',
       sensitive: true,
     },

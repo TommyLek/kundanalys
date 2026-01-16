@@ -18,6 +18,7 @@ function App() {
   const [customerSummary, setCustomerSummary] = useState<CustomerSummary | null>(null)
   const [showInternalData, setShowInternalData] = useState(true)
   const [showBonusCalculator, setShowBonusCalculator] = useState(false)
+  const [bonusAmount, setBonusAmount] = useState(0)
 
   const customers = allRows.length > 0 ? getUniqueCustomers(allRows) : []
 
@@ -33,6 +34,7 @@ function App() {
     const summary = calculateCustomerSummary(customerRows, kundnummer)
     setCustomerSummary(summary)
     setShowBonusCalculator(false)
+    setBonusAmount(0)
   }
 
   if (view === 'admin-varugrupp') {
@@ -157,6 +159,8 @@ function App() {
                   showInternalData={showInternalData}
                   showBonusCalculator={showBonusCalculator}
                   onCloseBonusCalculator={() => setShowBonusCalculator(false)}
+                  bonusAmount={bonusAmount}
+                  onBonusChange={setBonusAmount}
                 />
               )}
             </div>

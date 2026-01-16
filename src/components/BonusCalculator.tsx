@@ -6,6 +6,7 @@ interface BonusCalculatorProps {
   totalForsaljning: number
   kundnummer: number
   onClose: () => void
+  onBonusChange: (amount: number) => void
 }
 
 function formatCurrency(value: number): string {
@@ -31,7 +32,7 @@ function formatSwedishNumber(value: number, decimals: number = 1): string {
   })
 }
 
-export function BonusCalculator({ totalForsaljning, kundnummer, onClose }: BonusCalculatorProps) {
+export function BonusCalculator({ totalForsaljning, kundnummer, onClose, onBonusChange }: BonusCalculatorProps) {
   const [bonusType, setBonusType] = useState<BonusType>('rak')
   const [procentTyp1, setProcentTyp1] = useState('2,5')
   const [procentTyp2, setProcentTyp2] = useState('3,0')
@@ -54,6 +55,11 @@ export function BonusCalculator({ totalForsaljning, kundnummer, onClose }: Bonus
     procent,
     avdrag: avdragValue,
   })
+
+  // Report bonus amount changes to parent
+  useEffect(() => {
+    onBonusChange(calculation.bonusAmount)
+  }, [calculation.bonusAmount, onBonusChange])
 
   const berakningsunderlag = calculation.baseAmount - calculation.deductedAmount
 
