@@ -5,10 +5,10 @@ import { sv } from 'date-fns/locale'
 import type { CustomerSummary } from '../types'
 import { toPublicSummary } from './analytics'
 
-function formatCurrency(value: number): string {
+function formatCurrency(value: number, decimals: number = 2): string {
   return value.toLocaleString('sv-SE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   }) + ' kr'
 }
 
@@ -33,7 +33,7 @@ export function exportCustomerPDF(
   // Header
   doc.setFontSize(20)
   doc.setFont('helvetica', 'bold')
-  doc.text('Kundanalys', pageWidth / 2, yPos, { align: 'center' })
+  doc.text('Forsaljningsstatistik', pageWidth / 2, yPos, { align: 'center' })
   yPos += 10
 
   doc.setFontSize(14)
@@ -57,10 +57,10 @@ export function exportCustomerPDF(
   yPos += 8
 
   const kpiData = [
-    ['Total forsaljning', formatCurrency(publicSummary.kpis.totalForsaljning)],
+    ['Total forsaljning', formatCurrency(publicSummary.kpis.totalForsaljning, 0)],
     ['Antal ordrar', publicSummary.kpis.antalOrdrar.toString()],
     ['Antal orderrader', publicSummary.kpis.antalOrderrader.toString()],
-    ['Snitt ordervarde', formatCurrency(publicSummary.kpis.snittOrdervarde)],
+    ['Snitt ordervarde', formatCurrency(publicSummary.kpis.snittOrdervarde, 0)],
   ]
 
   autoTable(doc, {
@@ -86,7 +86,7 @@ export function exportCustomerPDF(
 
   const monthlyData = publicSummary.monthlySales.map((m) => [
     `${m.month} ${m.year}`,
-    formatCurrency(m.forsaljning),
+    formatCurrency(m.forsaljning, 0),
     m.ordrar.toString(),
   ])
 
@@ -120,7 +120,7 @@ export function exportCustomerPDF(
 
   const categoryData = publicSummary.topCategories.slice(0, 10).map((c) => [
     getVarugruppLabel(c.varugrupp),
-    formatCurrency(c.forsaljning),
+    formatCurrency(c.forsaljning, 0),
     formatNumber(c.antal),
   ])
 
@@ -155,7 +155,7 @@ export function exportCustomerPDF(
   const productData = publicSummary.topProducts.slice(0, 10).map((p) => [
     p.artikelnummer,
     getVarugruppLabel(p.varugrupp),
-    formatCurrency(p.forsaljning),
+    formatCurrency(p.forsaljning, 0),
     formatNumber(p.antal),
   ])
 
