@@ -29,7 +29,11 @@ export function KPICards({ kpis, showInternalData, bonusAmount = 0 }: KPICardsPr
     ? (marginalAfterBonus / kpis.totalForsaljning) * 100
     : 0
 
-  // Format margin subValue with optional bonus margin
+  // Format margin value and subValue with optional bonus margin
+  const marginalValue = bonusAmount > 0
+    ? `${formatCurrency(kpis.marginal)} (${formatCurrency(marginalAfterBonus)})`
+    : formatCurrency(kpis.marginal)
+
   const marginalSubValue = bonusAmount > 0
     ? `${formatPercent(kpis.marginalProcent)} (${formatPercent(marginalProcentAfterBonus)})`
     : formatPercent(kpis.marginalProcent)
@@ -52,7 +56,7 @@ export function KPICards({ kpis, showInternalData, bonusAmount = 0 }: KPICardsPr
     },
     {
       label: 'Marginal',
-      value: formatCurrency(kpis.marginal),
+      value: marginalValue,
       subValue: marginalSubValue,
       color: 'bg-amber-500',
       sensitive: true,
