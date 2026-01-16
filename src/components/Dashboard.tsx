@@ -6,6 +6,7 @@ import { SalesChart } from './SalesChart'
 import { CategoryBreakdown } from './CategoryBreakdown'
 import { TopProducts } from './TopProducts'
 import { ExportButton } from './ExportButton'
+import { BonusCalculator } from './BonusCalculator'
 
 interface DashboardProps {
   summary: CustomerSummary
@@ -31,6 +32,11 @@ export function Dashboard({ summary, showInternalData }: DashboardProps) {
       </div>
 
       <KPICards kpis={summary.kpis} showInternalData={showInternalData} />
+
+      <BonusCalculator
+        totalForsaljning={summary.kpis.totalForsaljning}
+        kundnummer={summary.kundnummer}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SalesChart monthlySales={summary.monthlySales} showInternalData={showInternalData} />

@@ -84,3 +84,11 @@ export interface CustomerSummary {
   topCategories: CategorySales[];
   topProducts: ProductSales[];
 }
+
+export type BonusType = 'rak' | 'medAvdrag'
+
+export interface BonusCalculation {
+  baseAmount: number;
+  deductedAmount: number;
+  bonusAmount: number;
+}
