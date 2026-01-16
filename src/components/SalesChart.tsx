@@ -26,12 +26,17 @@ function formatCurrency(value: number): string {
 }
 
 export function SalesChart({ monthlySales, showInternalData }: SalesChartProps) {
-  const data = monthlySales.map((m) => ({
-    name: `${m.month} ${m.year}`,
-    forsaljning: m.forsaljning,
-    kostnad: m.kostnad,
-    ordrar: m.ordrar,
-  }))
+  const data = monthlySales.map((m) => {
+    const marginal = m.forsaljning - m.kostnad
+    const marginalProcent = m.forsaljning > 0 ? (marginal / m.forsaljning) * 100 : 0
+    return {
+      name: `${m.month} ${m.year}`,
+      forsaljning: m.forsaljning,
+      marginal,
+      marginalProcent,
+      ordrar: m.ordrar,
+    }
+  })
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
@@ -55,16 +60,21 @@ export function SalesChart({ monthlySales, showInternalData }: SalesChartProps) 
               axisLine={{ stroke: '#e5e7eb' }}
             />
             <Tooltip
-              formatter={(value, name) => {
+              formatter={(value, name, props) => {
                 const numValue = typeof value === 'number' ? value : 0
-                const label = name === 'forsaljning' ? 'Forsaljning' : 'Kostnad'
-                return [
-                  numValue.toLocaleString('sv-SE', {
-                    style: 'currency',
-                    currency: 'SEK',
-                  }),
-                  label,
-                ]
+                const formattedValue = numValue.toLocaleString('sv-SE', {
+                  style: 'currency',
+                  currency: 'SEK',
+                })
+                if (name === 'marginal') {
+                  const marginalProcent = props.payload?.marginalProcent ?? 0
+                  const formattedProcent = marginalProcent.toLocaleString('sv-SE', {
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1,
+                  })
+                  return [`${formattedValue} (${formattedProcent}%)`, 'Marginal']
+                }
+                return [formattedValue, 'Försäljning']
               }}
               contentStyle={{
                 borderRadius: '8px',
@@ -75,7 +85,7 @@ export function SalesChart({ monthlySales, showInternalData }: SalesChartProps) 
             {showInternalData && (
               <Legend
                 formatter={(value) =>
-                  value === 'forsaljning' ? 'Forsaljning' : 'Kostnad (intern)'
+                  value === 'forsaljning' ? 'Försäljning' : 'Marginal (intern)'
                 }
               />
             )}
@@ -87,10 +97,10 @@ export function SalesChart({ monthlySales, showInternalData }: SalesChartProps) 
             />
             {showInternalData && (
               <Bar
-                dataKey="kostnad"
+                dataKey="marginal"
                 fill="#94a3b8"
                 radius={[4, 4, 0, 0]}
-                name="kostnad"
+                name="marginal"
               />
             )}
           </BarChart>
