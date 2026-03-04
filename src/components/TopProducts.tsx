@@ -77,7 +77,7 @@ export function TopProducts({ products, showInternalData }: TopProductsProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((product, index) => {
+            {products.filter((p) => !p.varugrupp.startsWith('9')).slice(0, 15).map((product, index) => {
               const marginal = product.forsaljning - product.kostnad
               const marginalPercent =
                 product.forsaljning > 0

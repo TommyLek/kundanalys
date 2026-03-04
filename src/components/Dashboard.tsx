@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { sv } from 'date-fns/locale'
-import type { CustomerSummary } from '../types'
+import type { CustomerSummary, BonusDetails } from '../types'
 import { KPICards } from './KPICards'
 import { StalleKPICards } from './StalleKPICards'
 import { SalesChart } from './SalesChart'
@@ -16,9 +16,13 @@ interface DashboardProps {
   onCloseBonusCalculator: () => void
   bonusAmount: number
   onBonusChange: (amount: number) => void
+  bonusDetails: BonusDetails | null
+  onBonusDetailsChange: (details: BonusDetails) => void
+  hideStalle800: boolean
+  onToggleStalle800: () => void
 }
 
-export function Dashboard({ summary, showInternalData, showBonusCalculator, onCloseBonusCalculator, bonusAmount, onBonusChange }: DashboardProps) {
+export function Dashboard({ summary, showInternalData, showBonusCalculator, onCloseBonusCalculator, bonusAmount, onBonusChange, bonusDetails, onBonusDetailsChange, hideStalle800, onToggleStalle800 }: DashboardProps) {
   const periodStart = format(summary.period.start, 'd MMM yyyy', { locale: sv })
   const periodEnd = format(summary.period.end, 'd MMM yyyy', { locale: sv })
 
@@ -33,7 +37,12 @@ export function Dashboard({ summary, showInternalData, showBonusCalculator, onCl
             Period: {periodStart} - {periodEnd}
           </p>
         </div>
-        <ExportButton summary={summary} showInternalData={showInternalData} />
+        <ExportButton
+          summary={summary}
+          showInternalData={showInternalData}
+          bonusDetails={bonusDetails}
+          hideStalle800={hideStalle800}
+        />
       </div>
 
       <KPICards
@@ -45,6 +54,8 @@ export function Dashboard({ summary, showInternalData, showBonusCalculator, onCl
       <StalleKPICards
         stalleSummaries={summary.stalleSummaries}
         showInternalData={showInternalData}
+        hideStalle800={hideStalle800}
+        onToggleStalle800={onToggleStalle800}
       />
 
       {showBonusCalculator && (
@@ -53,6 +64,7 @@ export function Dashboard({ summary, showInternalData, showBonusCalculator, onCl
           kundnummer={summary.kundnummer}
           onClose={onCloseBonusCalculator}
           onBonusChange={onBonusChange}
+          onBonusDetailsChange={onBonusDetailsChange}
         />
       )}
 

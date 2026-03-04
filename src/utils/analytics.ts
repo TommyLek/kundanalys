@@ -136,7 +136,7 @@ export function calculateProductSales(rows: OrderRow[]): ProductSales[] {
 
   return Array.from(productMap.values())
     .sort((a, b) => b.forsaljning - a.forsaljning)
-    .slice(0, 15)
+    .slice(0, 30)
 }
 
 export function calculateStalleSummaries(rows: OrderRow[]): StalleSummary[] {

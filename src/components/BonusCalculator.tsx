@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { BonusType } from '../types'
+import type { BonusType, BonusDetails } from '../types'
 import { calculateBonus } from '../utils/bonusCalculator'
 
 interface BonusCalculatorProps {
@@ -7,6 +7,7 @@ interface BonusCalculatorProps {
   kundnummer: number
   onClose: () => void
   onBonusChange: (amount: number) => void
+  onBonusDetailsChange?: (details: BonusDetails) => void
 }
 
 function formatCurrency(value: number): string {
@@ -32,7 +33,7 @@ function formatSwedishNumber(value: number, decimals: number = 1): string {
   })
 }
 
-export function BonusCalculator({ totalForsaljning, kundnummer, onClose, onBonusChange }: BonusCalculatorProps) {
+export function BonusCalculator({ totalForsaljning, kundnummer, onClose, onBonusChange, onBonusDetailsChange }: BonusCalculatorProps) {
   const [bonusType, setBonusType] = useState<BonusType>('rak')
   const [procentTyp1, setProcentTyp1] = useState('2,5')
   const [procentTyp2, setProcentTyp2] = useState('3,0')
@@ -60,6 +61,11 @@ export function BonusCalculator({ totalForsaljning, kundnummer, onClose, onBonus
   useEffect(() => {
     onBonusChange(calculation.bonusAmount)
   }, [calculation.bonusAmount, onBonusChange])
+
+  // Report full bonus details to parent
+  useEffect(() => {
+    onBonusDetailsChange?.({ bonusType, procent, calculation })
+  }, [bonusType, procent, calculation.baseAmount, calculation.deductedAmount, calculation.bonusAmount, onBonusDetailsChange])
 
   const berakningsunderlag = calculation.baseAmount - calculation.deductedAmount
 

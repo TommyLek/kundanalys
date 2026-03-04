@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import type { OrderRow, CustomerSummary } from './types'
+import { useState, useCallback } from 'react'
+import type { OrderRow, CustomerSummary, BonusDetails } from './types'
 import { FileUpload } from './components/FileUpload'
 import { CustomerSelector } from './components/CustomerSelector'
 import { Dashboard } from './components/Dashboard'
@@ -19,6 +19,12 @@ function App() {
   const [showInternalData, setShowInternalData] = useState(true)
   const [showBonusCalculator, setShowBonusCalculator] = useState(false)
   const [bonusAmount, setBonusAmount] = useState(0)
+  const [bonusDetails, setBonusDetails] = useState<BonusDetails | null>(null)
+  const [hideStalle800, setHideStalle800] = useState(false)
+
+  const handleBonusDetailsChange = useCallback((details: BonusDetails) => {
+    setBonusDetails(details)
+  }, [])
 
   const customers = allRows.length > 0 ? getUniqueCustomers(allRows) : []
 
@@ -35,6 +41,8 @@ function App() {
     setCustomerSummary(summary)
     setShowBonusCalculator(false)
     setBonusAmount(0)
+    setBonusDetails(null)
+    setHideStalle800(false)
   }
 
   if (view === 'admin-varugrupp') {
@@ -161,6 +169,10 @@ function App() {
                   onCloseBonusCalculator={() => setShowBonusCalculator(false)}
                   bonusAmount={bonusAmount}
                   onBonusChange={setBonusAmount}
+                  bonusDetails={showBonusCalculator ? bonusDetails : null}
+                  onBonusDetailsChange={handleBonusDetailsChange}
+                  hideStalle800={hideStalle800}
+                  onToggleStalle800={() => setHideStalle800((v) => !v)}
                 />
               )}
             </div>

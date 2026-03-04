@@ -102,3 +102,9 @@ export interface BonusCalculation {
   deductedAmount: number;
   bonusAmount: number;
 }
+
+export interface BonusDetails {
+  bonusType: BonusType;
+  procent: number;
+  calculation: BonusCalculation;
+}

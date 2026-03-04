@@ -3,6 +3,8 @@ import type { StalleSummary } from '../types'
 interface StalleKPICardsProps {
   stalleSummaries: StalleSummary[]
   showInternalData: boolean
+  hideStalle800: boolean
+  onToggleStalle800: () => void
 }
 
 function formatCurrency(value: number): string {
@@ -21,15 +23,35 @@ function formatPercent(value: number): string {
   }) + '%'
 }
 
-export function StalleKPICards({ stalleSummaries, showInternalData }: StalleKPICardsProps) {
+export function StalleKPICards({ stalleSummaries, showInternalData, hideStalle800, onToggleStalle800 }: StalleKPICardsProps) {
+
   if (stalleSummaries.length === 0) return null
+
+  const hasStalle800 = stalleSummaries.some((s) => s.stalle === 800)
 
   // Sort by ställe number ascending
   const sortedSummaries = [...stalleSummaries].sort((a, b) => a.stalle - b.stalle)
+  const displayedSummaries = hideStalle800
+    ? sortedSummaries.filter((s) => s.stalle !== 800)
+    : sortedSummaries
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Summering per ställe</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-medium text-gray-900">Summering per ställe</h3>
+        {hasStalle800 && (
+          <button
+            onClick={onToggleStalle800}
+            className={`text-xs px-2.5 py-1 rounded-md transition-colors ${
+              hideStalle800
+                ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            800
+          </button>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -47,7 +69,7 @@ export function StalleKPICards({ stalleSummaries, showInternalData }: StalleKPIC
             </tr>
           </thead>
           <tbody>
-            {sortedSummaries.map((stalle) => (
+            {displayedSummaries.map((stalle) => (
               <tr key={stalle.stalle} className="border-b border-gray-100 last:border-b-0">
                 <td className="py-2 pr-4 font-medium text-gray-900">{stalle.stalle}</td>
                 <td className="text-right py-2 px-4 text-gray-900">{formatCurrency(stalle.totalForsaljning)}</td>
