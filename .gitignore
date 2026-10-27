@@ -27,3 +27,7 @@ npm-debug.log*
 # Credentials
 Supabase.md
 artiklar-import/
+
+# Lokala filer
+.claude/settings.local.json
+Skärmdumpar/
